@@ -286,7 +286,7 @@ class SimpleRobotControl:
                 while d>math.pi:
                     d=d-2*math.pi
             if d<-math.pi:
-                while d<math.pi:
+                while d<-math.pi:
                     d=d+2*math.pi
             return d
 
