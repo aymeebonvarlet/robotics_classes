@@ -56,6 +56,7 @@ class SimpleRobotControl:
 
         r = m.l / 2.0
         theta = m.theta - math.pi / 2
+        #print("m.theta= ", m.theta)
         wheel_pos = [
             int(
                 m.x * METERS_TO_PIXEL
@@ -129,8 +130,8 @@ class SimpleRobotControl:
                     if e.key == pygame.K_TAB:
                         self.set_next_mode()
                     if e.key == pygame.K_SPACE:
-                        self.m.m1.speed = 0
-                        self.m.m2.speed = 0
+                        self.m.m1.speed = 0.0
+                        self.m.m2.speed = 0.0
                     if e.key == pygame.K_UP:
                         self.m.m1.speed = (
                             self.m.m1.speed + WHEEL_SPEED_INC * speed_multiplier
@@ -150,9 +151,13 @@ class SimpleRobotControl:
                 elif e.type == pygame.MOUSEMOTION:
                     mx, my = e.pos
                 elif e.type == MOUSEBUTTONDOWN and e.button == 1:
-                    mx, my = e.pos
-                    self.m.x_goal = (mx - WINCENTER[0]) / METERS_TO_PIXEL
-                    self.m.y_goal = -(my - WINCENTER[1]) / METERS_TO_PIXEL
+                    try:
+                        self.m.x_goal = (mx - WINCENTER[0]) / METERS_TO_PIXEL
+                        self.m.y_goal = -(my - WINCENTER[1]) / METERS_TO_PIXEL
+                    except:
+                        print("mx or my error")
+                        return 0
+
             if not (self.is_artist):
                 self.screen.fill(BLACK)
             if mode == XY_GOAL:
@@ -252,13 +257,17 @@ class SimpleRobotControl:
         """
         if m == None:
             m = self.m
+        #permet d'obtenir la distance entre (x,y) et (x_goal, y_goal)
         distance = math.sqrt(
             (m.x_goal - m.x) * (m.x_goal - m.x) + (m.y_goal - m.y) * (m.y_goal - m.y)
         )
-
+        #print("distance= ", distance)
         # TODO
-        local_speed = 0
-        local_turn = 0
+        #v=d/t ; w = delta theta / delta t
+        t=10
+        local_speed = distance/t
+        local_turn = m.theta_goal/t
+        #print("local_speed, local_turn :",local_speed, local_turn)
 
         m1_speed, m2_speed = m.ik(local_speed, local_turn)
         m.m1.speed = m1_speed
@@ -268,8 +277,18 @@ class SimpleRobotControl:
         """Returns the smallest distance between 2 angles
         """
         # TODO
-        d = 0
-        return d
+        print(a,b)
+        d = a-b
+        if not -math.pi<d<math.pi :
+            return d
+        else : 
+            if d>math.pi:
+                while d>math.pi:
+                    d=d-2*math.pi
+            if d<-math.pi:
+                while d<math.pi:
+                    d=d+2*math.pi
+            return d
 
 
 def main():
