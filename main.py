@@ -279,7 +279,7 @@ class SimpleRobotControl:
         # TODO
         print(a,b)
         d = a-b
-        if not -math.pi<d<math.pi :
+        if -math.pi<d<math.pi :
             return d
         else : 
             if d>math.pi:
