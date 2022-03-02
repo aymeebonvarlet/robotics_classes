@@ -74,6 +74,7 @@ class Model(object):
         linear_speed = (m1_speed + m2_speed)/2
         rotation_speed = (m1_speed - m2_speed)/self.l
         
+        
             
         return linear_speed, rotation_speed
 
@@ -90,15 +91,17 @@ class Model(object):
         #print("linear speed '{}'".format(linear_speed))
         #print("rotation speed '{}'".format(rotation_speed))
         
-        self.x_goal= self.r * math.sin(self.theta_goal)
-        self.y_goal= self.r*(1-math.cos(self.theta_goal))
-        
-        x_m=self.x_goal*math.cos(self.theta) - self.y_goal*math.sin(self.theta)
-        y_m=self.x_goal*math.sin(self.theta) + self.y_goal*math.cos(self.theta)
-
+        #print("x_goal, y_goal :'{}'".format(self.x_goal, self.y_goal))
+        x= self.r * math.sin(self.theta)
+        y= self.r*(1-math.cos(self.theta))
+        #print("theta", self.theta)
+        x_m=self.x*math.cos(self.theta) - self.y*math.sin(self.theta)
+        y_m=self.x*math.sin(self.theta) + self.y*math.cos(self.theta)
+        #print("x, y, x_m, y_m =", x,y,x_m, y_m)
         # TODO
         # Updating the robot position
         self.x = self.x + x_m  # TODO
         self.y = self.y + y_m# TODO
         self.theta = self.theta + self.theta_goal  # TODO
+        #print("x,y, theta : '{}'".format(self.x, self.y, self.theta))
 
