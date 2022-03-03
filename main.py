@@ -265,8 +265,10 @@ class SimpleRobotControl:
         # TODO
         #v=d/t ; w = delta theta / delta t
         t=10
-        local_speed = distance/t
-        local_turn = m.theta_goal/t
+        #local_speed = distance/t
+        #local_turn = m.theta_goal/t
+        local_speed=0
+        local_turn=0
         #print("local_speed, local_turn :",local_speed, local_turn)
 
         m1_speed, m2_speed = m.ik(local_speed, local_turn)
@@ -276,7 +278,6 @@ class SimpleRobotControl:
     def angle_diff(self, a, b):
         """Returns the smallest distance between 2 angles
         """
-        # TODO
         print(a,b)
         d = a-b
         if -math.pi<d<math.pi :

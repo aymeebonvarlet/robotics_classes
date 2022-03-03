@@ -15,6 +15,7 @@ class Model(object):
         # Distance between the wheels
         self.l = L
         # Wheel radius
+        #rayon roue
         self.r = R
 
         self.x = 0.0
@@ -52,10 +53,12 @@ class Model(object):
         Returns:
             float -- Speed of motor1 (m/s), speech of motor2 (m/s)
         """
-        
-        # TODO
-        m1_speed = linear_speed + rotational_speed * self.l/2
-        m2_speed = linear_speed - rotational_speed * self.l/2
+        # if rotational_speed == 0:
+        #     m1_speed=linear_speed
+        #     m2_speed=linear_speed
+        # else:
+        m1_speed = linear_speed - rotational_speed * self.l/2
+        m2_speed = linear_speed + rotational_speed * self.l/2
         return m1_speed, m2_speed
 
     def dk(self, m1_speed, m2_speed):
@@ -69,13 +72,9 @@ class Model(object):
         Returns:
             float -- linear speed (m/s), rotational speed (rad/s)
         """
-        
-        # TODO
+
         linear_speed = (m1_speed + m2_speed)/2
         rotation_speed = (m1_speed - m2_speed)/self.l
-        
-        
-            
         return linear_speed, rotation_speed
 
     def update(self, dt):
@@ -87,21 +86,26 @@ class Model(object):
             dt {float} -- Travel time in secondsself
         """
         # Going from wheel speeds to robot speed
+        
         linear_speed, rotation_speed = self.dk(self.m1.speed, self.m2.speed)
+        dp=linear_speed*dt #m.s et dt en s
+        alpha = rotation_speed *dt #rad.s et dt en s
+        
         #print("linear speed '{}'".format(linear_speed))
         #print("rotation speed '{}'".format(rotation_speed))
+        if rotation_speed==0:
+            dx=dp
+            dy=0
+        else :
+            dx= dp/alpha* math.sin(alpha)
+            dy= dp/alpha*(1-math.cos(alpha))
         
-        #print("x_goal, y_goal :'{}'".format(self.x_goal, self.y_goal))
-        x= self.r * math.sin(self.theta)
-        y= self.r*(1-math.cos(self.theta))
-        #print("theta", self.theta)
-        x_m=self.x*math.cos(self.theta) - self.y*math.sin(self.theta)
-        y_m=self.x*math.sin(self.theta) + self.y*math.cos(self.theta)
-        #print("x, y, x_m, y_m =", x,y,x_m, y_m)
-        # TODO
+        x_m=dx*math.cos(self.theta) - dy*math.sin(self.theta)
+        y_m=dx*math.sin(self.theta) + dy*math.cos(self.theta)
         # Updating the robot position
-        self.x = self.x + x_m  # TODO
-        self.y = self.y + y_m# TODO
-        self.theta = self.theta + self.theta_goal  # TODO
+        self.x = self.x + x_m  
+        self.y = self.y + y_m
+        self.theta = self.theta + alpha #
         #print("x,y, theta : '{}'".format(self.x, self.y, self.theta))
+
 
